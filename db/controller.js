@@ -1,4 +1,4 @@
-const {fetchAllTopics} = require("./models")
+const {fetchAllTopics, fetchEndpointDescriptions} = require("./models")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -8,4 +8,10 @@ exports.getAllTopics = (req, res, next) => {
     .catch((err) => {
         next(err);
       });
+}
+
+exports.getEndpointDescriptions = (req, res, next)=>{
+    const endpoints = fetchEndpointDescriptions()
+    console.log(fetchEndpointDescriptions())
+    res.status(200).send({endpoints})
 }
