@@ -12,6 +12,5 @@ exports.getAllTopics = (req, res, next) => {
 
 exports.getEndpointDescriptions = (req, res, next)=>{
     const endpoints = fetchEndpointDescriptions()
-    console.log(fetchEndpointDescriptions())
     res.status(200).send({endpoints})
 }
