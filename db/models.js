@@ -1,4 +1,5 @@
 const db = require("./connection");
+const endpoints = require("../endpoints.json")
 
 exports.fetchAllTopics = ()=>{
     return db.query("SELECT * FROM topics;").then(({rows})=>{
@@ -6,3 +7,6 @@ exports.fetchAllTopics = ()=>{
     })
 }
 
+exports.fetchEndpointDescriptions = () => {
+    return endpoints
+}
