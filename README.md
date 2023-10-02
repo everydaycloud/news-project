@@ -1,3 +1,3 @@
-# Northcoders News API
+# News API Project
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+In order to connect to the databases locally, add two .env.<name> files containing PGDATABASE=<database_name> (database names can be found in the setup.sql file) and make sure to run the command 'npm i dotenv' to make this work. 
