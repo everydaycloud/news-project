@@ -87,7 +87,7 @@ describe('get/articles/:article_id getArticlesById', () => {
             expect(res.body.articleById).hasOwnProperty("article_img_url");
         })
     });
-    test.only("article id does not exist returns error 404 and a message", () => {
+    test("article id does not exist returns error 404 and a message", () => {
         return request(app)
           .get("/api/articles/1234")
           .expect(404)
