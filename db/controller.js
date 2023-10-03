@@ -1,6 +1,7 @@
 const {fetchAllTopics, 
     fetchEndpointDescriptions, 
-    fetchArticlesById} = require("./models")
+    fetchArticlesById,
+    fetchAllArticles} = require("./models")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -18,11 +19,20 @@ exports.getEndpointDescriptions = (req, res, next)=>{
 }
 
 exports.getArticlesById = (req, res, next) => {
-    console.log('inside the controller')
     const articleId = req.params.article_id;
     fetchArticlesById(articleId)
     .then((articleById)=>{
         res.status(200).send({articleById})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.getAllArticles = (req, res, next) => {
+    fetchAllArticles()
+    .then((allArticles)=>{
+        res.status(200).send({allArticles})
     })
     .catch((err)=>{
         next(err)

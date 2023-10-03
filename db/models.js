@@ -12,19 +12,22 @@ exports.fetchEndpointDescriptions = () => {
 };
 
 exports.fetchArticlesById = (articleId) => {
-  if (articleId > 13) {
-    return Promise.reject({
-      status: 404,
-      msg: "Invalid article id number",
-    });
+    const regex = /^[0-9]+$/g
+  if (!regex.test(articleId)) {
+    const error = new Error("Invalid input type");
+        error.msg = "Invalid input type";
+          error.status = 400;
+          throw error;
   }
 
   return db
     .query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
     .then((result) => {
         const article = result.rows[0];
-        if (!article) {
+        console.log(result.rowCount)
+        if (result.rowCount === 0) {
           const error = new Error("Article not found");
+          error.msg = "Article not found";
           error.status = 404;
           throw error;
         }
@@ -35,3 +38,10 @@ exports.fetchArticlesById = (articleId) => {
           throw error;}
         })
 };
+
+exports.fetchAllArticles = () => {
+    return db.query("SELECT * FROM articles;").then(({ rows }) => {
+        return rows;
+      });
+}
+
