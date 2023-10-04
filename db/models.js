@@ -74,22 +74,63 @@ exports.fetchCommentsByArticleId = (articleId) => {
         throw error;
       }
     })
-    .then(() =>{
-        return db.query(
-      `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`,
-      [articleId]
-    )
-        })
+    .then(() => {
+      return db.query(
+        `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`,
+        [articleId]
+      );
+    })
     .then((result) => {
-      const comments = result.rows
+      const comments = result.rows;
       if (result.rowCount === 0) {
-        const noComments = {status: 200, msg: "No comments found"}
-        return noComments
+        const noComments = { status: 200, msg: "No comments found" };
+        return noComments;
       }
       return comments;
     });
 };
 
-exports.addComment = (commentContent) => {
-
-}
+exports.addCommentByArticleId = (articleId, commentContent) => {
+    const regex = /^[0-9]+$/g;
+    if (!regex.test(articleId)) {
+      const error = new Error("Invalid input type");
+      error.msg = "Invalid input type";
+      error.status = 400;
+      throw error;
+    }
+  
+    return db
+      .query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
+      .then((result) => {
+        if (result.rowCount === 0) {
+          const error = new Error("Article not found");
+          error.msg = "Article not found";
+          error.status = 404;
+          throw error;
+        }
+      })
+    .then (()=>{
+        return db
+      .query(`SELECT * FROM users WHERE username = $1;`, [commentContent.username])
+      .then((result) => {
+        if (result.rowCount === 0) {
+          const error = new Error("Author nor found");
+          error.msg = "Author not found";
+          error.status = 404;
+          throw error;
+        }
+    })
+      })
+      .then(() => {
+        return db.query(
+          `INSERT INTO comments (body, author, article_id)
+           VALUES ($1, $2, $3)
+           RETURNING *;`,
+          [commentContent.body, commentContent.username, articleId]
+        )
+      })
+      .then((result) => {
+        return result.rows;
+      });
+  };
+  
