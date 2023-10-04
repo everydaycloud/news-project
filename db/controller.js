@@ -2,7 +2,8 @@ const {fetchAllTopics,
     fetchEndpointDescriptions, 
     fetchArticlesById,
     fetchAllArticles,
-    fetchCommentsByArticleId} = require("./models")
+    fetchCommentsByArticleId,
+    addCommentByArticleId} = require("./models")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -51,11 +52,19 @@ exports.getCommentsByArticleId = (req, res, next) => {
     })
 }
 
-exports.postComment = (req, res, next) => {
-    const commentContent = req.params;
-    console.log(req.params)
-    addComment(commentContent)
-    .then((addedComment)=>{
-        res.status(200).send({addedComment})
+exports.postCommentByArticleId = (req, res, next) =>{
+    const articleId = req.params.article_id;
+    const commentContent = req.body;
+
+    if (commentContent.username === undefined || commentContent.body === undefined){
+        return res.status(400).send({msg: 'Username and comment body required'})
+    }
+
+    addCommentByArticleId(articleId, commentContent)
+    .then((newComment)=>{
+        res.status(201).send({newComment})
+    })
+    .catch((err)=>{
+        next(err)
     })
 }

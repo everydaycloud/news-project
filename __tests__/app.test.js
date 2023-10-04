@@ -219,3 +219,61 @@ describe("GET /api/articles/:article_id/comments get comments by article id", ()
       });
   });
 });
+
+describe('POST /api/articles/:article_id/comments add comment', () => {
+    test('responds with status 201 and comment containing appropriate properties when request is correct', () => {
+        const addedComment = {"username":"butter_bridge", "body":"my comment yay!"};
+        return request(app)
+        .post("/api/articles/3/comments")
+        .send(addedComment)
+        .expect(201)
+        .then((res)=>{
+            expect(res.body).hasOwnProperty("author")
+            expect(res.body).hasOwnProperty("body")
+            expect(res.body).hasOwnProperty("article_id")
+            expect(res.body).hasOwnProperty("comment_id")
+            expect(res.body).hasOwnProperty("votes")
+            expect(res.body).hasOwnProperty("created_at")
+        })
+    });
+    test('responds with status 400 error when request is incomplete', () => {
+        const addedComment = {"username":"poke"};
+        return request(app)
+        .post("/api/articles/3/comments")
+        .send(addedComment)
+        .expect(400)
+        .then((res)=>{
+            expect(res.body.msg).toBe("Username and comment body required");
+        })
+    });
+    test("article id in not a number returns error 400 and a message", () => {
+        const addedComment = {"username":"poke", "body":"mon"};
+        return request(app)
+          .post("/api/articles/xyz/comments")
+          .send(addedComment)
+          .expect(400)
+          .then((res) => {
+            expect(res.body.msg).toBe("Invalid input type");
+          });
+      });
+    test("author not in database returns error 404 and a message", () => {
+        const addedComment = {"username":"poke", "body":"mon"};
+        return request(app)
+          .post("/api/articles/3/comments")
+          .send(addedComment)
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe("Author not found");
+          });
+      });
+    test("should return a 404 status and message 'article not found' if the article does not exist", () => {
+        const addedComment = {"username":"poke", "body":"mon"};
+        return request(app)
+          .post("/api/articles/9999/comments")
+          .send(addedComment)
+          .expect(404)
+          .then((res) => {
+            expect(res.body.msg).toBe("Article not found")
+          });
+      });
+});
