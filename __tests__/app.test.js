@@ -132,4 +132,86 @@ describe("GET /api/articles get allArticles", () => {
         });
       });
   });
+  test("returns an article array without the body property for each article", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        const articles = res.body.allArticles;
+        articles.forEach((article) => {
+          expect(article).not.toHaveProperty("body");
+        });
+      });
+  });
+  test("the article array should be sorted by date in desc order", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then((res) => {
+        const articles = res.body.allArticles;
+        expect(articles).toBeSortedBy("created_at", {
+          coerce: true,
+          descending: true,
+        });
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id/comments get comments by article id", () => {
+  test("should return all comments associated with an article id", () => {
+    return request(app)
+      .get("/api/articles/5/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.commentsById).toEqual([
+            {
+              comment_id: 15,
+              body: "I am 100% sure that we're not completely sure.",
+              article_id: 5,
+              author: 'butter_bridge',
+              votes: 1,
+              created_at: '2020-11-24T00:08:00.000Z'
+            },
+            {
+              comment_id: 14,
+              body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.',
+              article_id: 5,
+              author: 'icellusedkars',
+              votes: 16,
+              created_at: '2020-06-09T05:00:00.000Z'
+            }
+          ]);
+        expect(res.body.commentsById).toBeSortedBy("created_at", {
+            coerce: true,
+            descending: true,
+          });
+      });
+  });
+  test("should return all comments in desc order by date", () => {
+    return request(app)
+      .get("/api/articles/3/comments")
+      .expect(200)
+      .then((res) => {
+        expect(res.body.commentsById).toBeSortedBy("created_at", {
+            coerce: true,
+            descending: true,
+          });
+      });
+  });
+  test("should return a 404 status and messages 'comment not found' if there are no comments for an article", () => {
+    return request(app)
+      .get("/api/articles/7/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe('No comments found')
+      });
+  });
+  test("article id in not a number returns error 400 and a message", () => {
+    return request(app)
+      .get("/api/articles/xyz/comments")
+      .expect(400)
+      .then((res) => {
+        expect(res.body.msg).toBe("Invalid input type");
+      });
+  });
 });

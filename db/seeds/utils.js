@@ -1,3 +1,7 @@
+const { articleData } = require("../data/test-data");
+const comments = require("../data/test-data/comments");
+const { commentCount, originalArticles }= require("../models")
+
 exports.convertTimestampToDate = ({ created_at, ...otherProperties }) => {
   if (!created_at) return { ...otherProperties };
   return { created_at: new Date(created_at), ...otherProperties };
@@ -21,3 +25,16 @@ exports.formatComments = (comments, idLookup) => {
   });
 };
 
+exports.createCommentCountData = (commentCount, originalArticles) => {
+  return originalArticles.map((article) => {
+    const commentObj = commentCount.find((comment) => {
+      return comment.article_id === article.article_id;
+    });
+
+    console.log('commentObj', commentObj);
+    const commentCountValue = commentObj ? commentObj.comment_count : 0;
+    console.log('commentCountValue', commentCountValue);
+
+    return commentCountValue;
+  });
+};

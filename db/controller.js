@@ -1,7 +1,8 @@
 const {fetchAllTopics, 
     fetchEndpointDescriptions, 
     fetchArticlesById,
-    fetchAllArticles} = require("./models")
+    fetchAllArticles,
+    fetchCommentsByArticleId} = require("./models")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -33,6 +34,19 @@ exports.getAllArticles = (req, res, next) => {
     fetchAllArticles()
     .then((allArticles)=>{
         res.status(200).send({allArticles})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.getCommentsByArticleId = (req, res, next) => {
+    const id = req.params.article_id;
+    console.log('controller', id)
+    fetchCommentsByArticleId(id)
+    .then((commentsById)=>{
+        console.log('controller again', commentsById)
+        res.status(200).send({commentsById})
     })
     .catch((err)=>{
         next(err)
