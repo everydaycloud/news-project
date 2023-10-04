@@ -236,8 +236,23 @@ describe('POST /api/articles/:article_id/comments add comment', () => {
             expect(res.body).hasOwnProperty("created_at")
         })
     });
+    test('responds with status 201 and comment containing appropriate properties when request contains extra data', () => {
+        const addedComment = {"username":"butter_bridge", "body":"my comment yay!", "date": "1/1/23"};
+        return request(app)
+        .post("/api/articles/3/comments")
+        .send(addedComment)
+        .expect(201)
+        .then((res)=>{
+            expect(res.body).hasOwnProperty("author")
+            expect(res.body).hasOwnProperty("body")
+            expect(res.body).hasOwnProperty("article_id")
+            expect(res.body).hasOwnProperty("comment_id")
+            expect(res.body).hasOwnProperty("votes")
+            expect(res.body).hasOwnProperty("created_at")
+        })
+    });
     test('responds with status 400 error when request is incomplete', () => {
-        const addedComment = {"username":"poke"};
+        const addedComment = {"username":"butter_bridge"};
         return request(app)
         .post("/api/articles/3/comments")
         .send(addedComment)
@@ -247,7 +262,7 @@ describe('POST /api/articles/:article_id/comments add comment', () => {
         })
     });
     test("article id in not a number returns error 400 and a message", () => {
-        const addedComment = {"username":"poke", "body":"mon"};
+        const addedComment = {"username":"butter_bridge", "body":"mon"};
         return request(app)
           .post("/api/articles/xyz/comments")
           .send(addedComment)
@@ -267,7 +282,7 @@ describe('POST /api/articles/:article_id/comments add comment', () => {
           });
       });
     test("should return a 404 status and message 'article not found' if the article does not exist", () => {
-        const addedComment = {"username":"poke", "body":"mon"};
+        const addedComment = {"username":"butter_bridge", "body":"mon"};
         return request(app)
           .post("/api/articles/9999/comments")
           .send(addedComment)
