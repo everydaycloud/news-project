@@ -1,7 +1,7 @@
 \c nc_news_test;
 
 -- SELECT article_id FROM articles;
--- SELECT * FROM articles;
+SELECT * FROM articles;
 -- SELECT * FROM comments;
 
 -->SELECT article_id, COUNT (*) AS comment_count
@@ -20,10 +20,17 @@
 
 --SELECT * FROM comments WHERE article_id = 5;
 
-SELECT * FROM users WHERE username = 'butter_bridge'; --> check if they exist, if not invalid user account
--- username in users is the same as author in comments
+-- SELECT * FROM users WHERE username = 'butter_bridge'; --> check if they exist, if not invalid user account
+-- -- username in users is the same as author in comments
 
-INSERT INTO comments (body, author, article_id)
-           VALUES ('mon', 'butter_bridge', 3)
-           RETURNING *;
+-- INSERT INTO comments (body, author, article_id)
+--            VALUES ('mon', 'butter_bridge', 3)
+--            RETURNING *;
 
+SELECT * FROM articles
+        WHERE article_id = 4;
+
+UPDATE articles
+        SET votes = votes + 1
+        WHERE article_id = 4
+        RETURNING *;

@@ -134,3 +134,41 @@ exports.addCommentByArticleId = (articleId, commentContent) => {
       });
   };
   
+  exports.updateArticleById = (articleId, incVotesBy) =>{
+
+    const regex = /^[0-9]+$/g;
+    if (!regex.test(articleId)) {
+      const error = new Error("Invalid input type");
+      error.msg = "Invalid input type";
+      error.status = 400;
+      throw error;
+    }
+    const regex2 = /^[\d +-]+$/g;
+    if (!(regex2.test(incVotesBy))) {
+      const error2 = new Error("Invalid increment-by value");
+      error2.msg = "Invalid increment-by value";
+      error2.status = 400;
+      throw error2;
+    }
+    return db
+      .query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
+      .then((result) => {
+        if (result.rowCount === 0) {
+          const error = new Error("Article not found");
+          error.msg = "Article not found";
+          error.status = 404;
+          throw error;
+        }
+      })
+    .then (()=>{
+        return db
+        .query(`UPDATE articles
+        SET votes = votes + $1
+        WHERE article_id = $2
+        RETURNING *;`,
+        [incVotesBy, articleId])
+    })
+    .then((result)=>{
+        return result.rows
+    })
+  }
