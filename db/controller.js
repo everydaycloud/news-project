@@ -50,3 +50,12 @@ exports.getCommentsByArticleId = (req, res, next) => {
         next(err)
     })
 }
+
+exports.postComment = (req, res, next) => {
+    const commentContent = req.params;
+    console.log(req.params)
+    addComment(commentContent)
+    .then((addedComment)=>{
+        res.status(200).send({addedComment})
+    })
+}

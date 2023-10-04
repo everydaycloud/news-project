@@ -65,18 +65,31 @@ exports.fetchCommentsByArticleId = (articleId) => {
   }
 
   return db
-    .query(
+    .query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
+    .then((result) => {
+      if (result.rowCount === 0) {
+        const error = new Error("Article not found");
+        error.msg = "Article not found";
+        error.status = 404;
+        throw error;
+      }
+    })
+    .then(() =>{
+        return db.query(
       `SELECT * FROM comments WHERE article_id = $1 ORDER BY created_at DESC;`,
       [articleId]
     )
+        })
     .then((result) => {
       const comments = result.rows
       if (result.rowCount === 0) {
-        const error = new Error("No comments found");
-        error.msg = "No comments found";
-        error.status = 404;
-        throw error;
+        const noComments = {status: 200, msg: "No comments found"}
+        return noComments
       }
       return comments;
     });
 };
+
+exports.addComment = (commentContent) => {
+
+}
