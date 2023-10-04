@@ -181,11 +181,7 @@ describe("GET /api/articles/:article_id/comments get comments by article id", ()
               created_at: '2020-06-09T05:00:00.000Z'
             }
           ]);
-        expect(res.body.commentsById).toBeSortedBy("created_at", {
-            coerce: true,
-            descending: true,
-          });
-      });
+        })
   });
   test("should return all comments in desc order by date", () => {
     return request(app)
@@ -198,12 +194,12 @@ describe("GET /api/articles/:article_id/comments get comments by article id", ()
           });
       });
   });
-  test("should return a 404 status and messages 'comment not found' if there are no comments for an article", () => {
+  test("should return a 200 status and messages 'comment not found' if there are no comments for an article", () => {
     return request(app)
       .get("/api/articles/7/comments")
-      .expect(404)
+      .expect(200)
       .then((res) => {
-        expect(res.body.msg).toBe('No comments found')
+        expect(res.body.commentsById.msg).toBe('No comments found')
       });
   });
   test("article id in not a number returns error 400 and a message", () => {
@@ -212,6 +208,14 @@ describe("GET /api/articles/:article_id/comments get comments by article id", ()
       .expect(400)
       .then((res) => {
         expect(res.body.msg).toBe("Invalid input type");
+      });
+  });
+  test("article does not exist returns error 404 and a message", () => {
+    return request(app)
+      .get("/api/articles/999/comments")
+      .expect(404)
+      .then((res) => {
+        expect(res.body.msg).toBe("Article not found");
       });
   });
 });
