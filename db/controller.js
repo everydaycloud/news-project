@@ -42,10 +42,8 @@ exports.getAllArticles = (req, res, next) => {
 
 exports.getCommentsByArticleId = (req, res, next) => {
     const id = req.params.article_id;
-    console.log('controller', id)
     fetchCommentsByArticleId(id)
     .then((commentsById)=>{
-        console.log('controller again', commentsById)
         res.status(200).send({commentsById})
     })
     .catch((err)=>{
