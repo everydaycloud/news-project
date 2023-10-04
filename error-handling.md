@@ -56,7 +56,8 @@ The following is _not_ a comprehensive list! Its purpose is just to get the ball
 
 ### GET `/api/articles/:article_id/comments`
 
-- ???
+- article_id not valid 
+- no comments for an article 
 
 ### GET `/api/articles`
 
