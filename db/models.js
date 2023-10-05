@@ -136,15 +136,15 @@ exports.addCommentByArticleId = (articleId, commentContent) => {
   
   exports.updateArticleById = (articleId, incVotesBy) =>{
 
-    const regex = /^[0-9]+$/g;
-    if (!regex.test(articleId)) {
+    const error1test = /^[0-9]+$/g;
+    if (!error1test.test(articleId)) {
       const error = new Error("Invalid input type");
       error.msg = "Invalid input type";
       error.status = 400;
       throw error;
     }
-    const regex2 = /^[\d +-]+$/g;
-    if (!(regex2.test(incVotesBy))) {
+    const error2test = /^[\d +-]+$/g;
+    if (!(error2test.test(incVotesBy))) {
       const error2 = new Error("Invalid increment-by value");
       error2.msg = "Invalid increment-by value";
       error2.status = 400;
@@ -172,3 +172,32 @@ exports.addCommentByArticleId = (articleId, commentContent) => {
         return result.rows
     })
   }
+
+exports.removeCommentById = (commentId) =>{
+
+    const error1test = /^[0-9]+$/g;
+    if (!error1test.test(commentId)) {
+      const error = new Error('Comment id required as a number');
+      error.msg = 'Comment id required as a number';
+      error.status = 400;
+      throw error;
+    }
+
+    return db
+      .query(`SELECT * FROM comments WHERE comment_id = $1;`, [commentId])
+      .then((result) => {
+        if (result.rowCount === 0) {
+          const error = new Error("Comment not found");
+          error.msg = "Comment not found";
+          error.status = 404;
+          throw error;
+        }
+      })
+      .then(()=>{
+        return db
+        .query(`DELETE FROM comments WHERE comment_id = $1;`, [commentId])
+      })
+      .then((result)=>{
+        return result.rows
+      })
+}

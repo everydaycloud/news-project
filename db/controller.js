@@ -4,7 +4,8 @@ const {fetchAllTopics,
     fetchAllArticles,
     fetchCommentsByArticleId,
     addCommentByArticleId,
-    updateArticleById } = require("./models")
+    updateArticleById,
+    removeCommentById } = require("./models")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -81,6 +82,18 @@ exports.patchArticleById = (req, res, next) => {
     updateArticleById(articleId, incVotesBy)
     .then((updatedArticle)=>{
         res.status(200).send({updatedArticle})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.deleteCommentById = (req, res, next) =>{
+    const commentId = req.params.comment_id
+
+    removeCommentById(commentId)
+    .then(()=>{
+        res.sendStatus(204)
     })
     .catch((err)=>{
         next(err)
