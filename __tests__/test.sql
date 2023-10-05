@@ -27,9 +27,11 @@ SELECT * FROM articles;
 --            VALUES ('mon', 'butter_bridge', 3)
 --            RETURNING *;
 
-SELECT * FROM comments;
+-- SELECT * FROM comments;
 
 -- UPDATE articles
 --         SET votes = votes + 1
 --         WHERE article_id = 4
 --         RETURNING *;
+
+SELECT * FROM users;
