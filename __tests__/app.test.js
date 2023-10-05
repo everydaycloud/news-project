@@ -315,6 +315,27 @@ describe("PATCH /api/articles/:article_id increments vote count", () => {
         expect(res.body).hasOwnProperty("article_img_url");
         expect(res.body.updatedArticle[0].votes).toEqual(1);
       });
+    })
+  test("should increment the vote count by the number specified in incVotes and return the correct object", () => {
+    const inc = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/4")
+      .send(inc)
+      .expect(200)
+      .then((res) => {
+        expect(res.body.updatedArticle[0]).toMatchObject(
+            {
+              article_id: 4,
+              title: 'Student SUES Mitch!',
+              topic: 'mitch',
+              author: 'rogersop',
+              body: 'We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages',
+              created_at: '2020-05-06T01:14:00.000Z',
+              votes: 1,
+              article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
+            }
+          );
+      });
   });
   test("should increment the vote count and return the correct article data when there is extra stuff in the request", () => {
     const inc = { inc_votes: 1, numbers: 2 };
@@ -362,7 +383,7 @@ describe("PATCH /api/articles/:article_id increments vote count", () => {
         expect(res.body.msg).toBe("Article not found");
       });
   });
-  test("should return a 400 status if inc_votes has no value or req is not sent on an object", () => {
+  test("should return a 400 status if inc_votes has no value", () => {
     const inc = { inc_votes: '' };
     return request(app)
       .patch("/api/articles/4")
