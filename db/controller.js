@@ -3,7 +3,8 @@ const {fetchAllTopics,
     fetchArticlesById,
     fetchAllArticles,
     fetchCommentsByArticleId,
-    addCommentByArticleId} = require("./models")
+    addCommentByArticleId,
+    updateArticleById } = require("./models")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -63,6 +64,23 @@ exports.postCommentByArticleId = (req, res, next) =>{
     addCommentByArticleId(articleId, commentContent)
     .then((newComment)=>{
         res.status(201).send({newComment})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.patchArticleById = (req, res, next) => {
+    const articleId = req.params.article_id;
+    const incVotesBy = req.body.inc_votes;
+
+    if (incVotesBy === undefined || typeof req.body !== 'object'){
+        return res.status(400).send({msg: 'Bad request - number required as a value of inc_votes key in an object'})
+    }
+
+    updateArticleById(articleId, incVotesBy)
+    .then((updatedArticle)=>{
+        res.status(200).send({updatedArticle})
     })
     .catch((err)=>{
         next(err)
