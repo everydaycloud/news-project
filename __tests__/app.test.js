@@ -441,3 +441,20 @@ describe("DELETE /api/comments/:comment_id delete comment by id", () => {
         })
     })
 })
+
+describe("GET /api/users", () => {
+    test("returns 200 status code", () => {
+      return request(app).get("/api/users").expect(200);
+    });
+    test("returns an array of user objects", () => {
+      return request(app)
+        .get("/api/users")
+        .then(({ body }) => {
+          body.allUsers.forEach((user) => {
+            expect(user).hasOwnProperty("username");
+            expect(user).hasOwnProperty("name");
+            expect(user).hasOwnProperty("avatar_url");
+          });
+        });
+    });
+  });

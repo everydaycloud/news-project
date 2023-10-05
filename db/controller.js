@@ -5,7 +5,8 @@ const {fetchAllTopics,
     fetchCommentsByArticleId,
     addCommentByArticleId,
     updateArticleById,
-    removeCommentById } = require("./models")
+    removeCommentById,
+    fetchAllUsers } = require("./models")
 
 exports.getAllTopics = (req, res, next) => {
     fetchAllTopics()
@@ -94,6 +95,16 @@ exports.deleteCommentById = (req, res, next) =>{
     removeCommentById(commentId)
     .then(()=>{
         res.sendStatus(204)
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}
+
+exports.getAllUsers = (req, res, next) =>{
+    fetchAllUsers()
+    .then((allUsers)=>{
+        res.status(200).send({allUsers})
     })
     .catch((err)=>{
         next(err)
