@@ -415,3 +415,29 @@ describe("PATCH /api/articles/:article_id increments vote count", () => {
   });
 });
 
+describe("DELETE /api/comments/:comment_id delete comment by id", () => {
+    test("deletes the comment by id and returns status 204", () => {
+      return request(app)
+        .delete("/api/comments/13")
+        .expect(204)
+        .then((res) => {
+            expect(res.body).toEqual({})
+        })
+    })
+    test("returns 400 if the comment id is not a number", () => {
+      return request(app)
+        .delete("/api/comments/xyz")
+        .expect(400)
+        .then((res) => {
+            expect(res.body.msg).toBe('Comment id required as a number')
+        })
+    })
+    test("returns 404 if the comment id does not exist", () => {
+      return request(app)
+        .delete("/api/comments/999")
+        .expect(404)
+        .then((res) => {
+            expect(res.body.msg).toBe("Comment not found")
+        })
+    })
+})
