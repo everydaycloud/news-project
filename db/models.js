@@ -22,7 +22,12 @@ exports.fetchArticlesById = (articleId) => {
   }
 
   return db
-    .query(`SELECT * FROM articles WHERE article_id = $1;`, [articleId])
+    .query(`SELECT a.article_id, a.author, a.title, a.topic, a.created_at, a.votes, a.article_img_url, a.body,
+    COUNT(c.article_id) AS comment_count
+    FROM articles AS a 
+    LEFT JOIN comments AS c ON a.article_id = c.article_id 
+    WHERE a.article_id = $1 
+    GROUP BY a.article_id`, [articleId])
     .then((result) => {
       const article = result.rows[0];
       if (result.rowCount === 0) {
