@@ -40,32 +40,66 @@ exports.fetchArticlesById = (articleId) => {
     });
 };
 
-exports.fetchAllArticles = (topic = undefined) => {
-  let query = `
-      SELECT a.article_id, a.author, a.title, a.topic, a.created_at, a.votes, a.article_img_url,
-      COUNT(c.article_id) AS comment_count
-      FROM articles AS a 
-      LEFT JOIN comments AS c ON a.article_id = c.article_id `;
+isTopicValid = (topic) => {
+  return db
+    .query(`SELECT * FROM topics WHERE slug = $1`, [topic])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        const topicError = new Error("Invalid topic");
+        topicError.msg = "Invalid topic";
+        topicError.status = 404;
+        throw topicError;
+      } else {
+        return null;
+      }
+    });
+};
 
-  const values = [];
+exports.fetchAllArticles = (topic = undefined) => {
+  let topicValidationPromise;
 
   if (topic !== undefined) {
-    query += `WHERE topic = $1 `;
-    values.push(topic);
+    topicValidationPromise = isTopicValid(topic);
+  } else {
+    topicValidationPromise = Promise.resolve(null);
   }
 
-  query += `
-      GROUP BY a.article_id, a.author, a.title, a.topic, a.created_at, a.votes, a.article_img_url
-      ORDER BY a.created_at DESC;
-    `;
-
-  return db.query(query, values)
-  .then(({ rows }) => {
-    if (rows.length === 0) {
-      const noSuchTopic = { status: 200, msg: "No articles on this topic or topic not in database" };
-      return noSuchTopic;
+  return topicValidationPromise.then((validationResult) => {
+    if (validationResult !== null) {
+      return validationResult;
     }
-    return rows;
+
+    let query = `
+            SELECT a.article_id, a.author, a.title, a.topic, a.created_at, a.votes, a.article_img_url,
+            COUNT(c.article_id) AS comment_count
+            FROM articles AS a 
+            LEFT JOIN comments AS c ON a.article_id = c.article_id `;
+
+    const values = [];
+
+    if (topic !== undefined) {
+      query += `WHERE topic = $1 `;
+      values.push(topic);
+    }
+
+    query += `
+            GROUP BY a.article_id, a.author, a.title, a.topic, a.created_at, a.votes, a.article_img_url
+            ORDER BY a.created_at DESC;
+          `;
+
+    return db
+      .query(query, values)
+      .then((res) => {
+        if (res.rows.length === 0) {
+          const noSuchTopic = { status: 200, msg: "No articles on this topic" };
+          return noSuchTopic;
+        }
+        return res.rows;
+      })
+      .catch((error) => {
+        console.log(error);
+        throw error;
+      });
   });
 };
 

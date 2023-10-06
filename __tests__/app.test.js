@@ -167,12 +167,12 @@ describe("GET /api/articles get allArticles", () => {
       });
     });
   });
-  test("responds with 200 when topic is not in the database", () => {
+  test("responds with 404 when topic is not in the database", () => {
     return request(app)
       .get("/api/articles?topic=invalidTopic")
-      .expect(200)
+      .expect(404)
       .then((res)=>{
-      expect(res.body.allArticles.msg).toBe("No articles on this topic or topic not in database");
+      expect(res.body.msg).toBe("Invalid topic");
     })
 })
   test("responds with message when topic is valid, but there are no articles", () => {
@@ -180,7 +180,7 @@ describe("GET /api/articles get allArticles", () => {
       .get("/api/articles?topic=paper")
       .expect(200)
       .then((res)=>{
-      expect(res.body.allArticles.msg).toBe("No articles on this topic or topic not in database");
+      expect(res.body.allArticles.msg).toBe("No articles on this topic");
     })
 })
 });
