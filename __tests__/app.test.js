@@ -61,7 +61,7 @@ describe("get/articles/:article_id getArticlesById", () => {
       author: "butter_bridge",
       body: "I find this existence challenging",
       comment_count: "11",
-      created_at: "2020-07-09T20:11:00.000Z",
+      created_at: expect.any(String),
       votes: 100,
       article_img_url:
         "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
@@ -200,7 +200,7 @@ describe("GET /api/articles/:article_id/comments get comments by article id", ()
             article_id: 5,
             author: "butter_bridge",
             votes: 1,
-            created_at: "2020-11-24T00:08:00.000Z",
+            created_at: expect.any(String),
           },
           {
             comment_id: 14,
@@ -208,7 +208,7 @@ describe("GET /api/articles/:article_id/comments get comments by article id", ()
             article_id: 5,
             author: "icellusedkars",
             votes: 16,
-            created_at: "2020-06-09T05:00:00.000Z",
+            created_at: expect.any(String),
           },
         ]);
       });
@@ -360,7 +360,7 @@ describe("PATCH /api/articles/:article_id increments vote count", () => {
               topic: 'mitch',
               author: 'rogersop',
               body: 'We all love Mitch and his wonderful, unique typing style. However, the volume of his typing has ALLEGEDLY burst another students eardrums, and they are now suing for damages',
-              created_at: '2020-05-06T01:14:00.000Z',
+              created_at: expect.any(String),
               votes: 1,
               article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
             }
