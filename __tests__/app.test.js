@@ -53,13 +53,14 @@ describe("get/api getEndpointDescriptions", () => {
 });
 
 describe("get/articles/:article_id getArticlesById", () => {
-  test("returns 200 status code and the article object when article id is valid", () => {
+  test("returns 200 status code and the article object when article id is valid incl. comment_count", () => {
     const testArticle = {
       article_id: 1,
       title: "Living in the shadow of a great man",
       topic: "mitch",
       author: "butter_bridge",
       body: "I find this existence challenging",
+      comment_count: "11",
       created_at: "2020-07-09T20:11:00.000Z",
       votes: 100,
       article_img_url:
@@ -86,6 +87,7 @@ describe("get/articles/:article_id getArticlesById", () => {
         expect(res.body.articleById).hasOwnProperty("created_at");
         expect(res.body.articleById).hasOwnProperty("votes");
         expect(res.body.articleById).hasOwnProperty("article_img_url");
+        expect(res.body.articleById).hasOwnProperty("comment_count");
       });
   });
   test("article id does not exist returns error 404 and a message", () => {
