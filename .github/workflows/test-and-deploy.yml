@@ -26,3 +26,11 @@ jobs:
 
       - name: Run tests
         run: PGDATABASE=news_api_ci PGUSER=news_user PGPASSWORD=news_password npm t
+
+  deploy:
+    name: Deploy to Render
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Deploy to render
+        run: curl ${{secrets.RENDER_DEPLOYHOOK_URL}}
