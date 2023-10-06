@@ -155,6 +155,34 @@ describe("GET /api/articles get allArticles", () => {
         });
       });
   });
+  test("the article array is filtered by topic if the topic is provided", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((res)=>{
+        const articles = res.body.allArticles;
+      expect(articles).toHaveLength(12);
+      articles.forEach((article) => {
+        expect(article.topic).toBe('mitch');
+      });
+    });
+  });
+  test("responds with 404 when topic is not in the database", () => {
+    return request(app)
+      .get("/api/articles?topic=invalidTopic")
+      .expect(404)
+      .then((res)=>{
+      expect(res.body.msg).toBe("Invalid topic");
+    })
+})
+  test("responds with message when topic is valid, but there are no articles", () => {
+    return request(app)
+      .get("/api/articles?topic=paper")
+      .expect(200)
+      .then((res)=>{
+      expect(res.body.allArticles.msg).toBe("No articles on this topic");
+    })
+})
 });
 
 describe("GET /api/articles/:article_id/comments get comments by article id", () => {
