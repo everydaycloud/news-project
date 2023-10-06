@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    
 test:
   name: Run applications tests
   runs-on: ubuntu-latest
