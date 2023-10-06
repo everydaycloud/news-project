@@ -1,13 +1,15 @@
 name: Test & Deploy
 
-  on:
-    push:
-      branches:
-        - main
+on:
+  push:
+    branches:
+      - main
 
+jobs:
   test:
-    name: Run applications tests
+    name: Test
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
@@ -15,16 +17,12 @@ name: Test & Deploy
       - name: Install dependencies
         run: npm ci
 
-      - name: Set env variables - db names nc_news_test
-
       - name: Setup Postgres
         uses: harmon758/postgresql-action@v1
         with:
-          postgresql db: news_api_ci
-          postgresql user: news_user
-          postgresql password: news_password
+          postgresql-db: news_api_ci
+          postgresql-user: news_user
+          postgresql-password: news_password
 
       - name: Run tests
         run: PGDATABASE=news_api_ci PGUSER=news_user PGPASSWORD=news_password npm t
-
-
